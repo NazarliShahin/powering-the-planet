@@ -61,9 +61,19 @@ reference.
 
 ## Usage
 
-Open `notebooks/01_explore.ipynb` in VS Code or JupyterLab, select the
-`.venv` kernel and run all cells. The notebook only calls the functions in
-`src/`; the logic is not duplicated in it.
+**Streamlit app** (interactive):
+
+```bash
+streamlit run app.py
+```
+
+The app has three tabs: the energy mix of a country over time, the
+decoupling of GDP and CO₂ between two chosen years, and the relationship
+between GDP per capita and CO₂ per capita across countries.
+
+**Notebook:** open `notebooks/01_explore.ipynb` in VS Code or JupyterLab,
+select the `.venv` kernel and run all cells. Both the app and the notebook
+only call the functions in `src/`; the logic is not duplicated.
 
 ## Project structure
 
