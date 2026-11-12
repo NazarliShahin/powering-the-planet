@@ -49,3 +49,53 @@ def find_decoupled(changes):
     """
     grew_and_cut = (changes["gdp_change_pct"] > 0) & (changes["co2_change_pct"] < 0)
     return changes[grew_and_cut].copy()
+
+
+
+#next-----------------------------
+
+
+
+
+ENERGY_SHARE_COLUMNS = {
+    "coal_energy_share_pct": "Coal",
+    "oil_energy_share_pct": "Oil",
+    "gas_energy_share_pct": "Gas",
+    "nuclear_energy_share_pct": "Nuclear",
+    "renewables_energy_share_pct": "Renewables",
+}
+
+
+def energy_mix(df, country, start_year=1990, end_year=2022):
+    """Select the energy mix of one country over a range of years.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Combined dataset with 'country', 'year' and the energy share columns.
+    country : str
+        Name of the country, as it appears in the 'country' column.
+    start_year : int, optional
+        First year to include.
+    end_year : int, optional
+        Last year to include.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Indexed by year, with one column per energy source (share of
+        primary energy, in percent).
+
+    Raises
+    ------
+    ValueError
+        If there is no data for the country in the given years.
+    """
+    in_country = df["country"] == country
+    in_years = df["year"].between(start_year, end_year)
+    mix = df[in_country & in_years].set_index("year")
+
+    if mix.empty:
+        raise ValueError(f"No data for {country} between {start_year} and {end_year}.")
+
+    return mix[list(ENERGY_SHARE_COLUMNS)].rename(columns=ENERGY_SHARE_COLUMNS)

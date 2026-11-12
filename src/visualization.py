@@ -51,3 +51,31 @@ def plot_change_scatter(changes, decoupled, title, xlim=None, ylim=None):
     if ylim is not None:
         ax.set_ylim(ylim)
     return fig
+
+
+#next--------------------------
+
+
+
+def plot_energy_mix(mix, title):
+    """Stacked area chart of the energy mix of one country over time.
+
+    Parameters
+    ----------
+    mix : pandas.DataFrame
+        Output of energy_mix(): indexed by year, one column per source.
+    title : str
+        Title of the plot.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The figure with the stacked area chart.
+    """
+    fig, ax = plt.subplots(figsize=(9, 6))
+    ax.stackplot(mix.index, mix.T.values, labels=mix.columns)
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Share of primary energy (%)")
+    ax.set_title(title)
+    ax.legend(loc="upper left")
+    return fig
