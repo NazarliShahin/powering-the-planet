@@ -2,6 +2,9 @@
 
 import pandas as pd
 
+import numpy as np
+from scipy import stats
+
 
 def change_between(df, start_year, end_year):
     """Compute the percentage change of GDP and CO2 between two years.
@@ -99,3 +102,36 @@ def energy_mix(df, country, start_year=1990, end_year=2022):
         raise ValueError(f"No data for {country} between {start_year} and {end_year}.")
 
     return mix[list(ENERGY_SHARE_COLUMNS)].rename(columns=ENERGY_SHARE_COLUMNS)
+
+#then ----
+
+
+
+def gdp_co2_relationship(df, year):
+    """Fit a log-log linear regression of CO2 per capita on GDP per capita.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Combined dataset with 'country', 'year', 'gdp', 'population' and
+        'co2_per_capita' columns.
+    year : int
+        Year used for the comparison across countries.
+
+    Returns
+    -------
+    data : pandas.DataFrame
+        One row per country with 'gdp_per_capita' and 'co2_per_capita'.
+    result : scipy.stats.LinregressResult
+        Regression result with slope, intercept, rvalue and pvalue, computed
+        on the base-10 logarithms of the two variables.
+    """
+    data = df[df["year"] == year].copy()
+    data["gdp_per_capita"] = data["gdp"] / data["population"]
+    data = data[["country", "gdp_per_capita", "co2_per_capita"]].dropna()
+    data = data[(data["gdp_per_capita"] > 0) & (data["co2_per_capita"] > 0)]
+
+    log_gdp = np.log10(data["gdp_per_capita"])
+    log_co2 = np.log10(data["co2_per_capita"])
+    result = stats.linregress(log_gdp, log_co2)
+    return data, result

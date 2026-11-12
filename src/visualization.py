@@ -1,5 +1,5 @@
 """Functions for plotting the results of the analysis."""
-
+import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -80,4 +80,50 @@ def plot_energy_mix(mix, title):
     ax.set_xlim(mix.index.min(), mix.index.max())
     ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1))
     fig.tight_layout()
+    return fig
+
+
+
+#then create other graph
+
+
+
+def plot_gdp_co2_relationship(data, result, year):
+    """Log-log scatter plot of CO2 per capita against GDP per capita.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        First output of gdp_co2_relationship(), with 'gdp_per_capita' and
+        'co2_per_capita' columns.
+    result : scipy.stats.LinregressResult
+        Second output of gdp_co2_relationship().
+    year : int
+        Year shown in the title.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The figure with the scatter plot and the fitted line.
+    """
+    fig, ax = plt.subplots(figsize=(9, 6))
+    ax.scatter(data["gdp_per_capita"], data["co2_per_capita"], alpha=0.6)
+
+    x = np.logspace(
+        np.log10(data["gdp_per_capita"].min()),
+        np.log10(data["gdp_per_capita"].max()),
+        100,
+    )
+    y = 10 ** (result.intercept + result.slope * np.log10(x))
+    ax.plot(
+        x, y, color="red",
+        label=f"slope = {result.slope:.2f}, R² = {result.rvalue ** 2:.2f}",
+    )
+
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_xlabel("GDP per capita (log scale)")
+    ax.set_ylabel("CO2 per capita, tonnes (log scale)")
+    ax.set_title(f"GDP and CO2 emissions per capita, {year}")
+    ax.legend()
     return fig
