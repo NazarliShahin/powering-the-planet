@@ -77,5 +77,7 @@ def plot_energy_mix(mix, title):
     ax.set_xlabel("Year")
     ax.set_ylabel("Share of primary energy (%)")
     ax.set_title(title)
-    ax.legend(loc="upper left")
+    ax.set_xlim(mix.index.min(), mix.index.max())
+    ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1))
+    fig.tight_layout()
     return fig
