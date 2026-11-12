@@ -49,15 +49,15 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # 4. download the data
-mkdir -p data/raw
-curl -L -o data/raw/owid-co2-data.csv https://owid-public.owid.io/data/co2/owid-co2-data.csv
-curl -L -o data/raw/owid-energy-data.csv https://catalog.ourworldindata.org/energy/owid_energy/owid_energy.csv
-curl -L -o data/raw/owid-co2-codebook.csv https://raw.githubusercontent.com/owid/co2-data/master/owid-co2-codebook.csv
-curl -L -o data/raw/owid-energy-codebook.csv https://catalog.ourworldindata.org/energy/owid_energy/owid_energy.codebook.csv
+python -m src.download
 ```
 
-The two `codebook` files describe every column and are only needed for
-reference.
+The script saves four files in `data/raw/`: the two datasets and their
+codebooks. The codebooks describe every column and are only needed for
+reference. If a download fails, the script stops with an explicit error
+message; run it again once the connection is back.
+
+
 
 ## Usage
 
@@ -83,6 +83,7 @@ powering-the-planet/
 ├── notebooks/
 │   └── 01_explore.ipynb   # data exploration and analysis
 ├── src/
+│   ├── download.py        # download_all: downloads the CSV files
 │   ├── data_loader.py     # load_csv: reads a CSV with error handling
 │   ├── cleaning.py        # keep_countries: removes regional aggregates
 │   ├── dataset.py         # build_dataset: cleans and merges CO2 + energy data
